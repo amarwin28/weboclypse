@@ -1,5 +1,7 @@
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
+import Splash from './components/Splash'
+import FloatingActions from './components/FloatingActions'
 import Hero from './sections/Hero'
 import Why from './sections/Why'
 import Teach from './sections/Teach'
@@ -16,6 +18,7 @@ import FinalCTA from './sections/FinalCTA'
 export default function App() {
   return (
     <>
+      <Splash />
       <Navbar />
       <main>
         <Hero />
@@ -34,6 +37,7 @@ export default function App() {
         <FinalCTA />
       </main>
       <Footer />
+      <FloatingActions />
     </>
   )
 }
