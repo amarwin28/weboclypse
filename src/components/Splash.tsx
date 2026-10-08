@@ -1,24 +1,15 @@
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
-const SEEN_KEY = 'weboclypse-splash-seen'
-
 function shouldShow(): boolean {
-  try {
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return false
-    return sessionStorage.getItem(SEEN_KEY) !== '1'
-  } catch {
-    return true
-  }
+  return true
 }
 
 export default function Splash() {
   const [show, setShow] = useState<boolean>(shouldShow)
-  const [needsInteraction, setNeedsInteraction] = useState(false)
   const videoRef = useRef<HTMLVideoElement | null>(null)
 
   const finish = () => {
-    try { sessionStorage.setItem(SEEN_KEY, '1') } catch { /* storage unavailable */ }
     setShow(false)
   }
 
@@ -38,10 +29,8 @@ export default function Splash() {
       try {
         video.muted = false
         await video.play()
-        setNeedsInteraction(false)
       } catch {
         // Browsers can block autoplay with sound. Let the visitor start it with one tap.
-        setNeedsInteraction(true)
       }
     }
 
@@ -53,18 +42,7 @@ export default function Splash() {
     }
   }, [show])
 
-  const startWithSound = async () => {
-    const video = videoRef.current
-    if (!video) return
-    try {
-      video.muted = false
-      await video.play()
-      setNeedsInteraction(false)
-    } catch {
-      // Keep the splash visible if playback still cannot start.
-    }
-  }
-
+ 
   if (!show) return null
 
   return (
@@ -91,18 +69,7 @@ export default function Splash() {
           aria-label="WEBOCLYPSE logo introduction"
         />
 
-        {needsInteraction && (
-          <motion.button
-            type="button"
-            onClick={startWithSound}
-            className="absolute bottom-8 left-1/2 -translate-x-1/2 rounded-full border border-white/25 bg-black/55 px-5 py-2.5 text-sm font-semibold text-white shadow-lg backdrop-blur-md transition hover:bg-black/70 focus:outline-none focus:ring-2 focus:ring-white/70"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-          >
-            Tap to start intro
-          </motion.button>
-        )}
-
+        
         <button
           type="button"
           onClick={finish}
