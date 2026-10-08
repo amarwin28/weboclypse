@@ -1,0 +1,27 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html { scroll-behavior: smooth; scroll-padding-top: 5rem; }
+  body { @apply bg-white font-sans text-ink antialiased overflow-x-hidden; }
+  :focus-visible { @apply outline-none ring-2 ring-violet-600 ring-offset-2 rounded-md; }
+}
+@layer components {
+  .container-x { @apply mx-auto w-full max-w-7xl px-5 sm:px-8; }
+  .section { @apply relative py-20 sm:py-28; }
+  .eyebrow { @apply inline-flex items-center gap-2 rounded-full border border-violet-200 bg-violet-50 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.14em] text-violet-700; }
+  .h2 { @apply font-display text-3xl font-extrabold leading-tight tracking-tight sm:text-4xl lg:text-5xl; }
+  .lead { @apply text-base text-ink/70 sm:text-lg; }
+  .grad-text { @apply bg-gradient-to-r from-violet-600 to-magenta-500 bg-clip-text text-transparent; }
+  .btn { @apply inline-flex items-center justify-center gap-2 rounded-xl px-6 py-3 text-sm font-bold transition duration-200 hover:-translate-y-0.5; }
+  .btn-primary { @apply btn bg-gradient-to-r from-violet-700 to-violet-500 text-white shadow-card hover:shadow-lift; }
+  .btn-outline { @apply btn border border-violet-300 bg-white text-violet-700 hover:bg-violet-50; }
+  .btn-gold { @apply btn bg-gold-400 text-ink shadow-card hover:bg-gold-300; }
+  .card { @apply rounded-3xl border border-violet-100 bg-white shadow-card transition duration-300 hover:-translate-y-1 hover:shadow-lift; }
+  .grid-lines { background-image: linear-gradient(rgba(106,47,230,.07) 1px, transparent 1px), linear-gradient(90deg, rgba(106,47,230,.07) 1px, transparent 1px); background-size: 48px 48px; -webkit-mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%); mask-image: radial-gradient(ellipse at center, #000 30%, transparent 75%); }
+  .bg-wash { background: radial-gradient(60% 50% at 85% 0%, rgba(124,77,255,.16), transparent 70%), radial-gradient(50% 40% at 0% 100%, rgba(192,38,211,.08), transparent 70%), #fbfaff; }
+}
+@keyframes drift { 0%,100% { transform: translateY(0) } 50% { transform: translateY(-8px) } }
+.drift { animation: drift 6s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) { .drift { animation: none; } html { scroll-behavior: auto; } }
