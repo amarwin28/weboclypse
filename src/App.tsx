@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import Splash from './components/Splash'
@@ -16,12 +17,14 @@ import Team from './sections/Team'
 import FinalCTA from './sections/FinalCTA'
 
 export default function App() {
+  // Becomes true only after the splash has faded out; triggers the hero entrance.
+  const [introDone, setIntroDone] = useState(false)
   return (
     <>
-      <Splash />
+      <Splash onDone={() => setIntroDone(true)} />
       <Navbar />
       <main>
-        <Hero />
+        <Hero play={introDone} />
         <Why />
         <Teach />
         <Method />
