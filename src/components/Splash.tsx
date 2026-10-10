@@ -1,9 +1,11 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 
-// If the video never starts (error, stalled network, blocked playback) we
-// close the splash after this long so the visitor is never stuck.
+// If the video never starts (load error, stalled network) close the splash after this long.
 const START_TIMEOUT_MS = 8000
+// If the browser blocks audible autoplay, wait this long for a first user
+// interaction (which lets sound play) before moving on so nobody is stuck.
+const BLOCKED_GRACE_MS = 4000
 
 interface SplashProps {
   /** Called once the splash has fully faded out and been removed. */
@@ -14,7 +16,7 @@ export default function Splash({ onDone }: SplashProps) {
   // Always true on a fresh page load: nothing is persisted between visits.
   const [show, setShow] = useState(true)
   const videoRef = useRef<HTMLVideoElement | null>(null)
-  const startedRef = useRef(false) // guards against duplicate play attempts (Strict Mode, canplay + autoplay)
+  const startedRef = useRef(false) // guards against duplicate play attempts (Strict Mode, canplay)
 
   const finish = useCallback(() => setShow(false), [])
 
@@ -30,30 +32,57 @@ export default function Splash({ onDone }: SplashProps) {
     const video = videoRef.current
     if (!video) return
 
+    // The soundtrack is never muted by this code.
+    video.defaultMuted = false
+    video.muted = false
+
+    let timer = window.setTimeout(finish, START_TIMEOUT_MS)
+    const gestureEvents = ['pointerdown', 'touchstart', 'keydown'] as const
+
+    const clearTimer = () => window.clearTimeout(timer)
+    const removeGestureRetry = () => gestureEvents.forEach((e) => window.removeEventListener(e, retryOnGesture))
+
+    // Browser blocked audible autoplay: the video stays unmuted and waits.
+    // The first user interaction anywhere on the page unlocks sound, so retry then.
+    function retryOnGesture() {
+      removeGestureRetry()
+      video!.muted = false
+      void video!.play().catch(() => undefined)
+    }
+
+    const onPlaying = () => {
+      clearTimer()
+      removeGestureRetry()
+    }
+
     const start = async () => {
       if (startedRef.current) return
       startedRef.current = true
       video.currentTime = 0
+      video.muted = false
       try {
-        // 1) Try with the video's original audio.
-        video.muted = false
         await video.play()
       } catch {
-        try {
-          // 2) Browser blocked sound autoplay: retry muted, automatically.
-          video.muted = true
-          await video.play()
-        } catch {
-          // 3) Even muted playback failed: don't leave the visitor stuck.
-          finish()
-        }
+        clearTimer()
+        timer = window.setTimeout(finish, BLOCKED_GRACE_MS)
+        gestureEvents.forEach((e) => window.addEventListener(e, retryOnGesture, { once: true }))
       }
     }
 
-    const onPlaying = () => window.clearTimeout(timer)
-    const timer = window.setTimeout(finish, START_TIMEOUT_MS)
-    video.addEventListener('playing', onPlaying, { once: true })
+    // A reload can hit a transient media error (e.g. a cached partial response).
+    // Retry loading once from the start before giving up, and log the reason.
+    let retried = false
+    const onVideoError = () => {
+      console.warn('[Splash] video error', video.error?.code, video.error?.message)
+      if (retried) return finish()
+      retried = true
+      startedRef.current = false
+      video.load()
+      video.addEventListener('canplay', start, { once: true })
+    }
 
+    video.addEventListener('error', onVideoError)
+    video.addEventListener('playing', onPlaying)
     if (video.readyState >= 2) {
       void start()
     } else {
@@ -61,11 +90,21 @@ export default function Splash({ onDone }: SplashProps) {
     }
 
     return () => {
-      window.clearTimeout(timer)
+      clearTimer()
+      removeGestureRetry()
       video.removeEventListener('canplay', start)
       video.removeEventListener('playing', onPlaying)
+      video.removeEventListener('error', onVideoError)
     }
   }, [show, finish])
+
+  // Back/forward restores from the browser's page cache keep old React state
+  // (splash already closed). A restored page is not a fresh load, so reload it.
+  useEffect(() => {
+    const onPageShow = (e: PageTransitionEvent) => { if (e.persisted) window.location.reload() }
+    window.addEventListener('pageshow', onPageShow)
+    return () => window.removeEventListener('pageshow', onPageShow)
+  }, [])
 
   return (
     <AnimatePresence onExitComplete={onDone}>
@@ -87,7 +126,6 @@ export default function Splash({ onDone }: SplashProps) {
             playsInline
             preload="auto"
             onEnded={finish}
-            onError={finish}
             aria-label="WEBOCLYPSE logo introduction"
           />
           <button

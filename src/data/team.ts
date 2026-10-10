@@ -1,4 +1,4 @@
-import amarwin from '../assets/team/amarwin.jpg'
+import amarwin from '../assets/team/amarwin.jpeg'
 import gurudhakshna from '../assets/team/gurudhakshna.jpg'
 import haziq from '../assets/team/haziq.jpg'
 import adeshvar from '../assets/team/adeshvar.jpg'
