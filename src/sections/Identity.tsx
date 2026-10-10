@@ -3,30 +3,104 @@ import { GithubIcon, LinkedinIcon } from '../components/BrandIcons'
 import Reveal from '../components/Reveal'
 import SectionHeader from '../components/SectionHeader'
 
-const gh = ['Repositories', 'Commits', 'README files', 'Project documentation', 'Project organization', 'Portfolio development', 'Showcasing technical work']
-const li = ['Profile creation', 'Profile optimization', 'Project descriptions', 'Achievements', 'Professional posts', 'Networking', 'Personal branding']
+const gh = [
+  'Repositories & structure',
+  'Meaningful commits & history',
+  'Professional README documentation',
+  'Project organization & clean architecture',
+  'Interactive live demos & deployment',
+  'Comprehensive portfolio development',
+  'Showcasing technical work with confidence',
+]
 
-function Panel({ icon, title, items, delay }: { icon: React.ReactNode; title: string; items: string[]; delay: number }) {
-  return (
-    <Reveal delay={delay}>
-      <div className="card h-full p-7 sm:p-8">
-        <div className="flex items-center gap-3"><span className="flex h-12 w-12 items-center justify-center rounded-2xl bg-ink text-white">{icon}</span><h3 className="font-display text-xl font-bold">{title}</h3></div>
-        <ul className="mt-6 space-y-3">
-          {items.map((i) => <li key={i} className="flex items-center gap-3 text-sm font-semibold text-ink/80"><Check className="h-4 w-4 text-violet-600" strokeWidth={3} />{i}</li>)}
-        </ul>
-      </div>
-    </Reveal>
-  )
-}
+const li = [
+  'Headline & summary optimization',
+  'Project case-study presentation',
+  'Certificates & milestone validation',
+  'Strategic networking with founders & developers',
+  'Crafting high-engagement technical posts',
+  'Building an authentic personal brand',
+  'Turning profile views into real opportunities',
+]
 
 export default function Identity() {
   return (
     <section className="section">
       <div className="container-x">
-        <SectionHeader eyebrow="Professional identity" title={<>Don't just be a student. <span className="grad-text">Build a professional identity.</span></>} intro="Your GitHub and LinkedIn are often the first thing people see. We help you make them count — with real work behind them." />
-        <div className="grid gap-6 md:grid-cols-2">
-          <Panel icon={<GithubIcon className="h-6 w-6" />} title="GitHub" items={gh} delay={0} />
-          <Panel icon={<LinkedinIcon className="h-6 w-6" />} title="LinkedIn" items={li} delay={0.1} />
+        <SectionHeader
+          eyebrow="Professional identity"
+          title={
+            <>
+              Don't just be a student.{' '}
+              <span className="grad-text">Build a professional identity.</span>
+            </>
+          }
+          intro="Your GitHub and LinkedIn are often the first thing people see. We help you make them count — with real work behind them."
+        />
+
+        {/* Clean two-column layout with minimal separator (Cards removed) */}
+        <div className="mt-14 grid gap-12 md:grid-cols-2 md:gap-0">
+          {/* GitHub Column */}
+          <Reveal>
+            <div className="md:pr-10 lg:pr-14">
+              <div className="flex items-center gap-3.5">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-ink text-white shadow-sm">
+                  <GithubIcon className="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 className="font-display text-2xl font-bold text-ink">GitHub</h3>
+                  <p className="text-xs font-semibold text-ink/60">Your living engineering proof</p>
+                </div>
+              </div>
+
+              <p className="mt-4 text-sm leading-relaxed text-ink/70">
+                Move past empty commits and tutorials. Build public repositories that demonstrate
+                problem-solving ability, clean documentation, and real implementation skills.
+              </p>
+
+              <ul className="mt-6 space-y-3">
+                {gh.map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm font-semibold text-ink/80">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-100 text-violet-700">
+                      <Check className="h-3 w-3 stroke-[3]" />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
+
+          {/* LinkedIn Column with Minimal Separator */}
+          <Reveal delay={0.1}>
+            <div className="border-t border-violet-100 pt-8 md:border-l md:border-t-0 md:pl-10 md:pt-0 lg:pl-14">
+              <div className="flex items-center gap-3.5">
+                <span className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0a66c2] text-white shadow-sm">
+                  <LinkedinIcon className="h-5 w-5" />
+                </span>
+                <div>
+                  <h3 className="font-display text-2xl font-bold text-ink">LinkedIn</h3>
+                  <p className="text-xs font-semibold text-ink/60">Your professional voice & reach</p>
+                </div>
+              </div>
+
+              <p className="mt-4 text-sm leading-relaxed text-ink/70">
+                Transform your profile from a student resume into a dynamic creator hub. Learn to
+                share learnings, connect with mentors, and attract internship discussions.
+              </p>
+
+              <ul className="mt-6 space-y-3">
+                {li.map((item) => (
+                  <li key={item} className="flex items-center gap-3 text-sm font-semibold text-ink/80">
+                    <span className="flex h-5 w-5 shrink-0 items-center justify-center rounded-full bg-violet-100 text-[#0a66c2]">
+                      <Check className="h-3 w-3 stroke-[3]" />
+                    </span>
+                    {item}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

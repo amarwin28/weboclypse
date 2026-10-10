@@ -3,6 +3,8 @@ import { ArrowRight, Bot, Boxes, Crown } from 'lucide-react'
 import { HIGHLIGHTS } from '../data/site'
 import { OfficialLogo } from '../components/Logo'
 
+import { useJoinModal } from '../context/JoinModalContext'
+
 const chip = 'absolute flex items-center gap-2 rounded-2xl border border-violet-100 bg-white px-3.5 py-2.5 text-xs font-bold text-violet-800 shadow-card'
 
 const EASE = [0.22, 1, 0.36, 1] as const
@@ -19,6 +21,7 @@ const item: Variants = {
 
 /** `play` flips to true once the splash has been dismissed. */
 export default function Hero({ play = true }: { play?: boolean }) {
+  const { openJoinModal } = useJoinModal()
   return (
     <section id="home" className="bg-wash relative overflow-hidden pb-16 pt-32 sm:pb-24 sm:pt-40">
       <div className="grid-lines pointer-events-none absolute inset-0" aria-hidden="true" />
@@ -35,7 +38,13 @@ export default function Hero({ play = true }: { play?: boolean }) {
           </motion.p>
           <motion.div variants={item} className="mt-8 flex flex-wrap gap-3">
             <a href="#programs" className="btn-primary">Explore Programs <ArrowRight className="h-4 w-4" /></a>
-            <a href="#contact" className="btn-outline">Join WEBOCLYPSE</a>
+            <button
+              type="button"
+              onClick={() => openJoinModal({ audience: 'student' })}
+              className="btn-outline"
+            >
+              Join WEBOCLYPSE
+            </button>
           </motion.div>
           <motion.ul variants={item} className="mt-10 grid max-w-xl grid-cols-2 gap-5 sm:grid-cols-4">
             {HIGHLIGHTS.map((h) => (

@@ -6,7 +6,7 @@ import { TEAM } from '../data/team'
 
 export default function Footer() {
   return (
-    <footer id="contact" className="border-t border-violet-100 bg-violet-50/50 pt-16">
+    <footer className="border-t border-violet-100 bg-violet-50/50 pt-16">
       <div className="container-x grid gap-12 pb-12 md:grid-cols-2 lg:grid-cols-4">
         <div>
           <Logo />
